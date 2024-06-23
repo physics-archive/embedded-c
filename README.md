@@ -1,4 +1,4 @@
-# Embedded Programming -- STM32 Microcontroller Development Board
+# Embedded Programming for STM32 Chips
 Source code and firmware for STM32 embedded systems. Educational project based on LowByteProductions' bare-metal-series project.
 
 To get started with c libraries: 
