@@ -15,3 +15,10 @@
 generated.*.ld
 .gdb_history
 *.bin
+*.aux
+*latexmk
+*.fls
+*.log
+*.pdf
+*.synctex.gz
+
