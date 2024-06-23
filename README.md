@@ -1,4 +1,4 @@
-# C for Embedded (STM32)
+# C for Embedded Systems (STM32)
 Source code and firmware for STM32 embedded systems. Educational project based on LowByteProductions' bare-metal-series project.
 
 To get started with c libraries: 
