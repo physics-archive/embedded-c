@@ -3,7 +3,7 @@
         {
             "name": "MacOS",
             "includePath": [
-                "${workspaceFolder}/**"//,
+                "${workspaceFolder}/**"
                 //"${workspaceFolder}/bootloader/inc",
             ],
             "defines": [

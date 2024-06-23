@@ -1,2 +1,17 @@
 */.DS_Store
 *.DS_Store
+*.elf
+*.o
+*.map
+*~
+*.o
+*.d
+*.elf
+*.hex
+*.srec
+*.list
+*.map
+*.stylecheck
+generated.*.ld
+.gdb_history
+*.bin
