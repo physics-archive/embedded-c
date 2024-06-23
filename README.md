@@ -1,4 +1,4 @@
-# Embedded Programming for STM32 Chips
+# C and ASM for STM32
 Source code and firmware for STM32 embedded systems. Educational project based on LowByteProductions' bare-metal-series project.
 
 To get started with c libraries: 
