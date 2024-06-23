@@ -20,10 +20,20 @@
 
 \subsection*{Default and Delayed Frequencies}
 %Math
-$$f = \frac{N}{t} = 84,000,000 \frac{cycles}{second}\\[3 ex]$$
+$$\newline$$
+\large
+$$f = \frac{N}{t} \approxeq 84,000,000 \frac{cycles}{second}\\[3 ex]$$
 
 $$f' = \frac{N'}{t} = \frac{N/N_d}{t}\\[3 ex]$$
+    \large
+    \normalsize
+*$f'$ is controllable, as opposed to $f$ which is determined by hardware.\\[1 ex]
 
-$$t = \frac{N/N_d}{f}$$
+    \large
+The natural frequency ($f$) is on the order of MHZ; we want to observe the blinking with natural vision, so the solution is to add cycle delays ($N_d$) to produce a new, smaller frequency ($f'$).
+
+%$$t = \frac{N/N_d}{f'}$$
+%Another way to write this would be to isolate our target frequency, $f'$, to emphasize our goal of controlling the LED blink frequency.
+
 
 \end{document}
