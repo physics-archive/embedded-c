@@ -82,7 +82,10 @@ Consider the following code excerpt:\\[1 ex]
   \end{lstlisting}
   %$$N_{loop} = \sum_{i=0}^{N}1 = 84000000\ iterations \stackrel{?}{=} 84000000\ cycles$$
 
-\
+%\begin{center}
+
+%    \includegraphics{../}
+%\end{center}
 
 Pushing this firmware and
 observing the LED, it's clear that the order of magnitude is approximately correct, 
@@ -143,7 +146,7 @@ Although inefficient, we determined the time (or cycles) required
 to execute simple machine instructions, without reading any corresponding assembly code.
 %%Reduce the implemented delay by a factor of $c_i$ and re-measure $f'$ to confirm that it approaches $1\ \frac{cycle}{second}$.\\[2 ex]
 
-%% INSERT 1 SECOND PHOTO %%
+%% INSERT 1 SECOND PHOTO %% 
 
 
 \end{flushleft}
@@ -180,7 +183,7 @@ to execute simple machine instructions, without reading any corresponding assemb
       gpio_setup();
   
       while (1) {
-          // Toggle the LED's state at freq (f')
+          // Toggle the LED state at freq (f')
           gpio_toggle(LED_PORT,LED_PIN);
           maintain_frequency_standard(84000000/4);
       }
