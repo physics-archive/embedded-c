@@ -11,10 +11,11 @@
 \usepackage{amssymb}
 \usepackage{listings}
 \usepackage{color}
-
+\usepackage{xcolor}
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{beige}{HTML}{FFFFF0}
 
 \lstset{frame=tb,
   language=Java,
@@ -44,16 +45,16 @@
 \subsection*{Default and Delayed Frequencies}
 %Math
 \large
-If the firmware's only instruction is to blink an LED on the board,
-the blinking won't be visible at its core 
+If a firmware's only instruction is to blink an onboard LED,
+blinks will occur at a natural [default core]
 frequency ($f$) of 84MHz. We want to observe the blinking 
-with natural vision, so the solution 
-is to add a number of cycle delays ($N_d$) to produce a new, 
-significantly-reduced frequency ($f'$).\\[1 ex]
+with natural vision, so we'll need to to add a number of cycle delays 
+($N_d$) to our application to target a 
+significantly-reduced, observable frequency ($f'$).\\[1 ex]
 
 $$f = \frac{N}{T} = 84000000\ \frac{cycles}{second}\\[3 ex]$$
 
-$$f' = \frac{N'}{T} = \frac{N/N_{delays}}{t}\\[3 ex]$$
+$$f' = \frac{N'}{T} = \frac{N/N_{d}}{T} \\[3 ex]$$
 \large
 
 \normalsize
@@ -61,35 +62,37 @@ $$f' = \frac{N'}{T} = \frac{N/N_{delays}}{t}\\[3 ex]$$
 
 \large
 \begin{flushleft}
-Initial implementation of cycle delays could be achieved
-with a 
-for loop that executes only one, null instruction. At first 
+Initial implementation of cycle delays could be a 
+$for\ loop$ that executes only one 'no-operation' instruction. At first 
 glance, one iteration requires one cycle, so iterating ($i = 0;\ i < N;\ i++$)
-predicts a requirement of $N_{loop}$ iterations: $N_{loop} = N = 84\ million\ cycles$. Consider the following:\\[1 ex] 
+predicts a requirement of $N_d = N_{loop}$ iterations, where $N_{loop} = N = 84\ million\ cycles$;
+this corresponds to our desired $f'= 1\ Hz$.\\[2 ex] 
+
+Consider the following code excerpt:\\[1 ex] 
 
 %%%%%%% FOR LOOP CODE %%%%%%%%%%%
-\begin{lstlisting}
+\begin{lstlisting}[backgroundcolor = \color{beige},
+                    language = C,
+                    xleftmargin = 2cm,
+                    framexleftmargin = 1em]
   for (uint32_t i = 0; i < N; i++) {
         __asm__("nop");
   }
   gpio_toggle(led_port,led_pin);
   \end{lstlisting}
-  $$N_{loop} = \sum_{i=0}^{N}1 = 84000000\ iterations \stackrel{?}{=} 84000000\ cycles$$
+  %$$N_{loop} = \sum_{i=0}^{N}1 = 84000000\ iterations \stackrel{?}{=} 84000000\ cycles$$
 
-This summation assumes that 1 iteration of the $for\ loop$ is performed within one CPU cycle. However,
-observing the LED after a firmware update, it's clear that the order of magnitude is approximately correct, 
-yet $f'$ is 4-5 times smaller than expected.\\[2 ex]
-
-Why is this the case 
-if our application runs at 84MHz and our for loop executes only one command?\\[1 ex]
+Pushing this firmware and
+observing the LED, it's clear that the order of magnitude is approximately correct, 
+yet $f'$ is 4-5 times smaller than expected. Why is true 
+if our application runs at 84MHz and our for loop executes only one $nop$ assembly instruction?\\[1 ex]
 
 \end{flushleft}
 \begin{itemize}
 \setlength{\itemindent}{0.4in}
-    \item The application is running on the system at $N$ cycles per second, 
-    but each iteration of our for loop 
-    costs more than 1 cycle. 
-    \item $N$ iterations of this $for\ loop$ ($N_{loops}$) costs $cN$ cycles, where $c > 1$.
+    \item The application does process on the system at $N$ cycles per second, 
+    but each iteration of the $for\ loop$ costs more than 1 CPU cycle. 
+    \item $N$ iterations of this $for\ loop$ ($N_{loops}$) costs $cN$ cycles ($c > 1$).
     \item $N_{loops} < N$ must be satisfied to achieve $f' \le 1.$
 \end{itemize}
 
@@ -107,18 +110,18 @@ $$N_{loop} = c_i\sum_{i=0}^{N} 1 = \frac{N}{f' * 1\ second}$$
 $$c_i = \frac{1}{\sum_{i=0}^{N} 1} \frac{N}{f' * 1\ second}$$
 $$c_i = \frac{1}{N} \frac{N}{f'*1\ second}$$
 $$c_i = \frac{1}{f' * 1\ second}$$
-Unsurprisingly, the observed frequency ($f'$) is inversely proportional to the number of cycles used per loop-iteration. 
-The required number of iterations is over-estimated in our firmware, resulting in the LED blinking $too\ slowly$. 
+
+Unsurprisingly, the observed frequency ($f'$) is inversely proportional to the number of cycles required for one iteration.
+Our firmware over-estimated this requirement, resulting in the LED blinking $too\ slowly$. 
 Reduce the number of iterations and the blinker rate will increase; reducing them by a factor of $c_i$ should yield our target of $f' = 1$.
-This is our correction factor for $N_{loop}$.\\[2 ex]
+That is, $f' = 1$ when $N_{loop} = \frac{1}{c_i}N$\\[2 ex]
 %Another way to write this would be to isolate our target frequency, $f'$, to emphasize our goal of controlling the LED blink frequency.
 
 Update the firmware and measure the blinker frequency. If the proposed relationship between $f'$ and $c_i$ is correct, 
-$c_i$ will be an integer. Likeewise, machine instructions should not cost $partial$ cycles; computing operations are mostly discrete.
-If $f'$ and $c_i$ aren't integers, there would be a problem.\\[2 ex]
+$c_i$ will be an integer. Likeewise, machine instructions should not cost $partial$ cycles; computing operations are mostly discrete.\\[2 ex]
 
 %%%%%%% FOR LOOP CODE %%%%%%%%%%%
-\begin{lstlisting}
+\begin{lstlisting}[backgroundcolor = \color{beige}]
     uiint32_t Nloop = 84000000 / 4;
     for (uint32_t i = 0; i < Nloop; i++) {
           __asm__("nop");
@@ -131,13 +134,12 @@ number of cycles required to complete one iteration of the $for\ loop$:
 
 $$c_i \approxeq \frac{1}{0.25 \frac{cycles}{second}} \frac{1}{1\ second} = 4\ cycles$$
 
-At 60fps, I measured $f' = 1.00 \frac{cycles}{second}$; it is safe to conclude that $c_i$ is highly accurate. 
-This is probably not accurate down to the milisecond scale, and that can be explored
-deeper during a later module.\\[2 ex]
+At 60fps, I measured $f' = 1.00 \frac{cycles}{second}$, suggesting our measurement of $c_i$ is highly accurate. 
+This is probably not accurate down to the milisecond scale where error propogations are more significant.\\[2 ex]
 
-Although tedious and inefficient, we determined how much time (or how many cycles) are required 
-to execute certain machine instructions, without having to read any corresponding assembly code.
-Reduce the implemented delay by a factor of $c_i$ and re-measure $f'$ to confirm that it approaches $1\ \frac{cycle}{second}$.\\[2 ex]
+Although inefficient, we determined the time (or cycles) required 
+to execute simple machine instructions, without reading any corresponding assembly code.
+%%Reduce the implemented delay by a factor of $c_i$ and re-measure $f'$ to confirm that it approaches $1\ \frac{cycle}{second}$.\\[2 ex]
 
 %% INSERT 1 SECOND PHOTO %%
 
@@ -148,9 +150,8 @@ Reduce the implemented delay by a factor of $c_i$ and re-measure $f'$ to confirm
 %%%%%%%%%%%%%% PASTE CODE %%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% PASTE CODE %%%%%%%%%%%%%%%%%%%%%
 \subsection*{Firmware Source Code:}
-\begin{lstlisting}
-
-  //Blinker Firmware 2024.06.18
+\begin{lstlisting}[backgroundcolor = \color{beige}]
+  // Blinker Firmware 2024.06.18
   #include <libopencm3/stm32/f4/rcc.h>
   #include <libopencm3/stm32/f4/gpio.h>
   
@@ -160,12 +161,9 @@ Reduce the implemented delay by a factor of $c_i$ and re-measure $f'$ to confirm
   static void rcc_setup(void) {
       rcc_clock_setup_pll(&rcc_hsi_configs[RCC_CLOCK_3V3_84MHZ]);
   }
-  
+
   static void gpio_setup(void) {
-      // Turn on the clock for a given periphereal
       rcc_periph_clock_enable(RCC_GPIOA);
-  
-      // Configure the LED pin. Send output to Port A
       gpio_mode_setup(LED_PORT,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,LED_PIN);
   }
   
@@ -180,11 +178,10 @@ Reduce the implemented delay by a factor of $c_i$ and re-measure $f'$ to confirm
       gpio_setup();
   
       while (1) {
-          // Turn the LED on and then off at freq (f')
+          // Toggle the LED's state at freq (f')
           gpio_toggle(LED_PORT,LED_PIN);
           maintain_frequency_standard(84000000/4);
       }
-  
       return 0;
   }
 
