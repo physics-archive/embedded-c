@@ -50,11 +50,11 @@ blinks will occur at a natural [default core]
 frequency ($f$) of 84MHz. We want to observe the blinking 
 with natural vision, so we'll need to to add a number of cycle delays 
 ($N_d$) to our application to target a 
-significantly-reduced, observable frequency ($f'$).\\[1 ex]
+significantly-reduced, observable frequency ($f'$).
 
-$$f = \frac{N}{T} = 84000000\ \frac{cycles}{second}\\[3 ex]$$
+$$f = \frac{N}{T} = 84000000\ \frac{cycles}{second}\\[1 ex]$$
 
-$$f' = \frac{N'}{T} = \frac{N/N_{d}}{T} \\[3 ex]$$
+$$f' \propto N' = \frac{N}{N_{d}}\\[1 ex]$$
 \large
 
 \normalsize
@@ -66,8 +66,7 @@ Initial implementation of cycle delays could be a
 $for\ loop$ that executes only one 'no-operation' instruction. At first 
 glance, one iteration requires one cycle, so iterating ($i = 0;\ i < N;\ i++$)
 predicts a requirement of $N_d = N_{loop}$ iterations, where $N_{loop} = N = 84\ million\ cycles$;
-this corresponds to our desired $f'= 1\ Hz$.\\[2 ex] 
-
+this corresponds to our desired $f'= 1\ Hz$.
 Consider the following code excerpt:\\[1 ex] 
 
 %%%%%%% FOR LOOP CODE %%%%%%%%%%%
@@ -81,21 +80,21 @@ Consider the following code excerpt:\\[1 ex]
   gpio_toggle(led_port,led_pin);
   \end{lstlisting}
   %$$N_{loop} = \sum_{i=0}^{N}1 = 84000000\ iterations \stackrel{?}{=} 84000000\ cycles$$
-
-%\begin{center}
-
-%    \includegraphics{../}
-%\end{center}
+  
+  %%%%%%%%% 4 SECOND FIRMWARE IMAGE %%%%%%%%%%%
+\begin{center}
+    \includegraphics[scale=0.75]{/Users/s285/vcs/github.com/subs-code/embedded-docs/compile/frequency/4-firmware-small.jpg}
+\end{center}
 
 Pushing this firmware and
 observing the LED, it's clear that the order of magnitude is approximately correct, 
-yet $f'$ is ~4 times smaller than expected. Why is true 
-if our application runs at 84MHz and our for loop executes only one $nop$ assembly instruction?\\[1 ex]
+yet $f'$ is ~4 times smaller than expected. Why is this true 
+if the application runs at 84MHz and each $for\ loop$ iteration executes only one $nop$ assembly instruction?\\[1 ex]
 
 \end{flushleft}
 \begin{itemize}
 \setlength{\itemindent}{0.4in}
-    \item The application does process on the system at $N$ cycles per second, 
+    \item The application runs at $N$ cycles per second, 
     but each iteration of the $for\ loop$ costs more than 1 CPU cycle. 
     \item $N$ iterations of this $for\ loop$ ($N_{loops}$) costs $cN$ cycles ($c > 1$).
     \item $N_{loops} < N$ must be satisfied to achieve $f' \le 1.$
@@ -115,6 +114,11 @@ $$N_{loop} = c_i\sum_{i=0}^{N} 1 = \frac{N}{f' * 1\ second}$$
 $$c_i = \frac{1}{\sum_{i=0}^{N} 1} \frac{N}{f' * 1\ second}$$
 $$c_i = \frac{1}{N} \frac{N}{f'*1\ second}$$
 $$c_i = \frac{1}{f' * 1\ second}$$
+This coefficient represents the 
+number of cycles required to complete one iteration of the $for\ loop$, and 
+we may calculate it using the frequency recorded above:
+
+$$c_i = \frac{1}{0.2540\ \frac{cycles}{second}} \frac{1}{1\ second} \approxeq 4\ cycles$$\\[1 ex]
 
 Unsurprisingly, the observed frequency ($f'$) is inversely proportional to the number of cycles required for one iteration.
 Our firmware over-estimated this requirement, resulting in the LED blinking $too\ slowly$. 
@@ -122,8 +126,8 @@ Reduce the number of iterations and the blinker rate will increase; reducing the
 That is, $f' = 1$ when $N_{loop} = \frac{1}{c_i}N$\\[2 ex]
 %Another way to write this would be to isolate our target frequency, $f'$, to emphasize our goal of controlling the LED blink frequency.
 
-Update the firmware and measure the blinker frequency. If the proposed relationship between $f'$ and $c_i$ is correct, 
-$c_i$ will be an integer. Likeewise, machine instructions should not cost $partial$ cycles; computing operations are mostly discrete.\\[2 ex]
+Update the firmware to reduce $N_{loop}$ by a factor of $c_i$. If the proposed relationship between $f'$ and $c_i$ is correct, 
+$f'$ will approach 1 Hz.\\[2 ex]
 
 %%%%%%% FOR LOOP CODE %%%%%%%%%%%
 \begin{lstlisting}[backgroundcolor = \color{beige}]
@@ -134,16 +138,18 @@ $c_i$ will be an integer. Likeewise, machine instructions should not cost $parti
     gpio_toggle(led_port,led_pin);
     \end{lstlisting}
 
-Re-assuring -- a blink frequency of $f' \approxeq 0.25\ cycles\ per\ second$. The inverse of this frequency gives the 
-number of cycles required to complete one iteration of the $for\ loop$:
+      %%%%%%%%% 4 SECOND FIRMWARE IMAGE %%%%%%%%%%%
+\begin{center}
+    \includegraphics[scale=0.75]{/Users/s285/vcs/github.com/subs-code/embedded-docs/compile/frequency/1-firmware-small.jpg}
+\end{center}
 
-$$c_i \approxeq \frac{1}{0.25 \frac{cycles}{second}} \frac{1}{1\ second} = 4\ cycles$$
+Re-assuring -- a blink frequency of $f' = 0.934\ Hz \approxeq 1\ Hz$ (6.6 percent error). 
 
-At 60fps, I measured $f' = 1.00 \frac{cycles}{second}$, suggesting our measurement of $c_i$ is highly accurate. 
-This is probably not accurate down to the milisecond scale where error propogations are more significant.\\[2 ex]
+%At 60fps, I measured $f' = 1.00 \frac{cycles}{second}$, suggesting our measurement of $c_i$ is highly accurate. 
+%This is probably not accurate down to the milisecond scale where error propogations are more significant.\\[2 ex]
 
 Although inefficient, we determined the time (or cycles) required 
-to execute simple machine instructions, without reading any corresponding assembly code.
+to execute simple machine instructions, without reading any corresponding assembly code.\\[90 ex]
 %%Reduce the implemented delay by a factor of $c_i$ and re-measure $f'$ to confirm that it approaches $1\ \frac{cycle}{second}$.\\[2 ex]
 
 %% INSERT 1 SECOND PHOTO %% 
