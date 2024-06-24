@@ -24,7 +24,7 @@ static uint64_t get_ticks(void) {
     return ticks;
 } 
 ////////////////////////////
-///    SETUP FEATURES     //
+///  MICROCONTROLLER CFG  //
 ////////////////////////////
 
 static void rcc_setup(void) {
@@ -42,8 +42,6 @@ static void systick_setup(void) {
     systick_interrupt_enable();
 }
 
-
-
 ////////////////////////////
 ///      APPLICATION      //
 ////////////////////////////
@@ -52,6 +50,8 @@ static void systick_setup(void) {
 int main(void) {
     rcc_setup();
     gpio_setup();
+
+    uint64_t start_time = get_ticks();
 
     //Execute Application
     while (1) {

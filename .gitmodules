@@ -4,3 +4,6 @@
 [submodule "bare-metal-series"]
 	path = bare-metal-series
 	url = git@github.com:lowbyteproductions/bare-metal-series.git
+[submodule "embedded-docs"]
+	path = embedded-docs
+	url = git@github.com:physics-archive/embedded-docs
