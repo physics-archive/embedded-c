@@ -3,7 +3,7 @@
     
     {
       "name": "JLink: Debug Application",
-      "cwd": "${workspaceFolder}/app",
+      "cwd": "${workspaceFolder}/firmware",
       "executable": "./firmware.elf",
       "serverpath": "/usr/bin/JLinkGDBServer",
       "servertype": "jlink",
@@ -29,7 +29,7 @@
     },
     {
       "name": "JLink: Attach to Application",
-      "cwd": "${workspaceFolder}/app",
+      "cwd": "${workspaceFolder}/firmware",
       "executable": "./firmware.elf",
       "serverpath": "/usr/bin/JLinkGDBServer",
       "servertype": "jlink",
@@ -54,7 +54,7 @@
     },
     {
       "name": "ST-Link: Debug Application",
-      "cwd": "${workspaceFolder}/app",
+      "cwd": "${workspaceFolder}/firmware",
       "executable": "./firmware.elf",
       "servertype": "stutil",
       "request": "launch",
@@ -78,7 +78,7 @@
     },
     {
       "name": "ST-Link: Attach to Application",
-      "cwd": "${workspaceFolder}/app",
+      "cwd": "${workspaceFolder}/firmware",
       "executable": "./firmware.elf",
       "servertype": "stutil",
       "request": "attach",

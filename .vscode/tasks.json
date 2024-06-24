@@ -28,7 +28,7 @@
       "type": "shell",
       "label": "build_debug",
       "options": {
-        "cwd": "app"
+        "cwd": "firmware"
       },
       "command": "make bin",
       "problemMatcher": "$gcc"

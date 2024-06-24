@@ -30,12 +30,10 @@ int main(void) {
     gpio_setup();
 
     while (1) {
-        // Turn the LED on and then off at freq (f)
+        // Turn the LED on and then off at freq (f')
         gpio_toggle(LED_PORT,LED_PIN);
-        maintain_frequency_standard(84000000 / 6);
+        maintain_frequency_standard(84000000/4);
     }
 
     return 0;
 }
-
-//LD2 - LED
