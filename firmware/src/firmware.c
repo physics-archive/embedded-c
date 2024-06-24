@@ -50,13 +50,15 @@ static void systick_setup(void) {
 int main(void) {
     rcc_setup();
     gpio_setup();
-
+    systick_setup();
     uint64_t start_time = get_ticks();
 
     //Execute Application
     while (1) {
-        gpio_toggle(LED_PORT,LED_PIN);
-        maintain_frequency_standard(84000000/4);
+        if (get_ticks() - start_time >= 1000) {
+            gpio_toggle(LED_PORT,LED_PIN);
+            start_time = get_ticks();
+        }
     }
 
     return 0;
