@@ -6,12 +6,11 @@
 
 #define LED_PORT      (GPIOA)
 #define LED_PIN       (GPIO5)
-
-#define CPU_FREQ      (84000000) // Hz
-#define SYSTICK_FREQ  (1000)     // ms
+#define CPU_FREQ      (84000000)
+#define SYSTICK_FREQ  (1000)
 
 ////////////////////////////
-/// APPLICATION FUNCTIONS //
+///   CONFIGURE PROGRAM   //
 ////////////////////////////
 
 volatile uint64_t ticks = 0;
@@ -22,7 +21,6 @@ void sys_tick_handler(void) {
 static uint64_t get_ticks(void) {
     return ticks;
 } 
-
 ////////////////////////////
 ///  MICROCONTROLLER CFG  //
 ////////////////////////////
