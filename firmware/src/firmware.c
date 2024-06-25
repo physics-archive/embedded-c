@@ -1,14 +1,13 @@
-//Firmware 2024.06.18
+//Firmware 2024.06.24
 #include <libopencm3/stm32/f4/rcc.h>
 #include <libopencm3/stm32/f4/gpio.h>
-
-#include "core/system.h" // Includes system.c module
+#include "core/system.h"
 
 #define LED_PORT    (GPIOA)
 #define LED_PIN     (GPIO5)
 
 /////////////////////////////
-///  MICROCONTROLLER CFG  ///
+///    APPLICATION CFG    ///
 /////////////////////////////
 
 static void gpio_setup(void) {
