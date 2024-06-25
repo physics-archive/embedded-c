@@ -4,21 +4,21 @@
 
 #include "core/system.h" // Includes system.c module
 
-#define LED_PORT      (GPIOA)
-#define LED_PIN       (GPIO5)
+#define LED_PORT    (GPIOA)
+#define LED_PIN     (GPIO5)
 
-////////////////////////////
-///  MICROCONTROLLER CFG  //
-////////////////////////////
+/////////////////////////////
+///  MICROCONTROLLER CFG  ///
+/////////////////////////////
 
 static void gpio_setup(void) {
     rcc_periph_clock_enable(RCC_GPIOA);
     gpio_mode_setup(LED_PORT,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,LED_PIN);
 }
 
-////////////////////////////
-///      APPLICATION      //
-////////////////////////////
+/////////////////////////////
+///      APPLICATION      ///
+/////////////////////////////
 
 // Configure Microcontroller
 int main(void) {
