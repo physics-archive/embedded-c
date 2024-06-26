@@ -5,6 +5,8 @@ int main(void) {
     while (1) {
         for (uint32_t i = 0; i < Nloop; i++) {
             __asm__("nop");
+            __asm__("nop");
+            __asm__("nop");
         }
         uint32_t b = 40;
     }
