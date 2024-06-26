@@ -59,7 +59,7 @@ CSTD		?= -std=c99
 # 			DEFAULT $(BINARY) = "FIRMWARE"
 OBJS		+= $(SRC_DIR)/$(BINARY).o
 OBJS        += $(SRC_DIR)/core/system.o
-OBJS		+= $(SRC_DIR)/../../assembly/whileloop/nopwhile.o
+#OBJS		+= $(SRC_DIR)/forloop.o
 #OBJS		+= $(SRC_DIR)/bootloader.o
 #OBJS		+= $(SRC_DIR)/timer.o
 #OBJS		+= $(SRC_DIR)/info.o
