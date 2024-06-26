@@ -1,8 +1,8 @@
 \documentclass[a4paper,12pt]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
-\usepackage[papersize={216mm,330mm},tmargin=25mm,bmargin=25mm,lmargin=25mm,rmargin=25mm]{geometry}
+\usepackage[papersize={216mm,330mm},tmargin=15mm,bmargin=15mm,lmargin=15mm,rmargin=15mm]{geometry}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
-%\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+%\usepackage[margin=1cm]{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
 %\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
 %\geometry{landscape}                		% Activate for rotated page geometry
 %\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
@@ -72,7 +72,7 @@ Consider the following code excerpt:\\[1 ex]
 %%%%%%% FOR LOOP CODE %%%%%%%%%%%
 \begin{lstlisting}[backgroundcolor = \color{beige},
                     language = C,
-                    xleftmargin = 2cm,
+                    xleftmargin = 1cm,
                     framexleftmargin = 1em]
   for (uint32_t i = 0; i < N; i++) {
         __asm__("nop");
@@ -130,7 +130,10 @@ Update the firmware to reduce $N_{loop}$ by a factor of $c_i$. If the proposed r
 $f'$ will approach 1 Hz.\\[2 ex]
 
 %%%%%%% FOR LOOP CODE %%%%%%%%%%%
-\begin{lstlisting}[backgroundcolor = \color{beige}]
+\begin{lstlisting}[backgroundcolor = \color{beige},
+    language = C,
+    xleftmargin = 1cm,
+    framexleftmargin = 1em]
     uiint32_t Nloop = 84000000 / 4;
     for (uint32_t i = 0; i < Nloop; i++) {
           __asm__("nop");
@@ -161,7 +164,10 @@ to execute simple machine instructions, without reading any corresponding assemb
 %%%%%%%%%%%%%% PASTE CODE %%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% PASTE CODE %%%%%%%%%%%%%%%%%%%%%
 \subsection*{Firmware Source Code:}
-\begin{lstlisting}[backgroundcolor = \color{beige}]
+\begin{lstlisting}[backgroundcolor = \color{beige},
+                        language = C,
+                        xleftmargin = 1cm,
+                        framexleftmargin = 1em]
   // Blinker Firmware 2024.06.18
   #include <libopencm3/stm32/f4/rcc.h>
   #include <libopencm3/stm32/f4/gpio.h>
