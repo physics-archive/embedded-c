@@ -35,15 +35,25 @@
 }
 \pagestyle{myheadings}
 
-
 \linespread{1}
 \title{Blinker Frequency}
 \author{STM32F466RE}
 \begin{document}
 \maketitle
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%           PRE-TEXT BOX            %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{flushleft}
+    \fbox{\parbox{.7\textwidth}{% or whatever
+    some words here
+    }}
+\end{flushleft}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%          FIRST SECTION           %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Default and Delayed Frequencies}
-%Math
 \large
 If a firmware's only instruction is to blink an onboard LED,
 blinks will occur at a natural [default core]
@@ -160,9 +170,9 @@ to execute simple machine instructions, without reading any corresponding assemb
 
 \end{flushleft}
 
-%%%%%%%%%%%%%% PASTE CODE %%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%% PASTE CODE %%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%% PASTE CODE %%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%            PASTE CODE            %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Firmware Source Code:}
 \begin{lstlisting}[backgroundcolor = \color{beige},
                         language = C,

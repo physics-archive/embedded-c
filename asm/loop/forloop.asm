@@ -7,4 +7,4 @@ Dump of assembler code for function main:
    0x0000000a <+10>:    nop
    0x0000000c <+12>:    ldr     r0, [r0, #116]  @ 0x74
    0x0000000e <+14>:    lsls    r0, r0, #5
-   End of assembler dump.
+End of assembler dump.

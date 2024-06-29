@@ -32,6 +32,6 @@ int main(void) {
             start_time = system_get_ticks();
         }
     }
-
+    
     return 0;
 }
