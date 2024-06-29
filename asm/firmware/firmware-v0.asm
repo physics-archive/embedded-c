@@ -1,4 +1,4 @@
-@ Firmware v0 -- Blinker with 4s frequency (no delayed cycles). Blink will occur very rapidly (84MHz).
+@ Firmware v0 -- Blink will occur very rapidly (84MHz).
 Dump of assembler code for function main:
    0x00000000 <+0>:     push    {r3, lr}
    0x00000002 <+2>:     ldr     r0, [pc, #36]   @ (0x28 <main+40>)

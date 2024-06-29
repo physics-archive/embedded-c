@@ -45,8 +45,13 @@
 %%%           PRE-TEXT BOX            %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{flushleft}
-    \fbox{\parbox{.7\textwidth}{% or whatever
-    some words here
+    \fbox{\parbox{1\textwidth}{% or whatever
+    *CPU pipelining allows instructions to be processed in parallel, making it difficult to confidently 
+     determine how many loop iterations occur per clock cycle, even for simple programs;
+     Intel describes this as "a form of parallelization where multiple iterations of a loop execute concurrently" [1].
+     Disentangling the effects of pipelining from these computations is impossible at this level of depth.
+     %As a consequence, it's necessary to scrutinize this module's calculations by comparing results against 
+     %assembly code and architecture.
     }}
 \end{flushleft}
 
@@ -56,11 +61,10 @@
 \subsection*{Default and Delayed Frequencies}
 \large
 If a firmware's only instruction is to blink an onboard LED,
-blinks will occur at a natural [default core]
-frequency ($f$) of 84MHz. We want to observe the blinking 
-with natural vision, so we'll need to to add a number of cycle delays 
-($N_d$) to our application to target a 
-significantly-reduced, observable frequency ($f'$).
+blinks will occur at around$^*$ the core
+frequency ($f$) of 84MHz. We want to slow the blinking 
+such that it's naturally visible, so we'll need to to add a number of cycle delays 
+($N_d$) to our application to target an easily-observable frequency ($f'$).
 
 $$f = \frac{N}{T} = 84000000\ \frac{cycles}{second}\\[1 ex]$$
 
@@ -72,9 +76,9 @@ $$f' \propto N' = \frac{N}{N_{d}}\\[1 ex]$$
 
 \large
 \begin{flushleft}
-Initial implementation of cycle delays could be a 
+Initial implementation of cycle delays could be achieved by a 
 $for\ loop$ that executes only one 'no-operation' instruction. At first 
-glance, one iteration requires one cycle, so iterating ($i = 0;\ i < N;\ i++$)
+glance, one iteration of this loop requires one cycle, so iterating ($i = 0;\ i < N;\ i++$)
 predicts a requirement of $N_d = N_{loop}$ iterations, where $N_{loop} = N = 84\ million\ cycles$;
 this corresponds to our desired $f'= 1\ Hz$.
 Consider the following code excerpt:\\[1 ex] 
@@ -89,14 +93,14 @@ Consider the following code excerpt:\\[1 ex]
   }
   gpio_toggle(led_port,led_pin);
   \end{lstlisting}
-  %$$N_{loop} = \sum_{i=0}^{N}1 = 84000000\ iterations \stackrel{?}{=} 84000000\ cycles$$
+%$$N_{loop} = \sum_{i=0}^{N}1 = 84000000\ iterations \stackrel{?}{=} 84000000\ cycles$$
   
-  %%%%%%%%% 4 SECOND FIRMWARE IMAGE %%%%%%%%%%%
+%%%%%%%%% 4 SECOND FIRMWARE IMAGE %%%%%%%%%%%
 \begin{center}
     \includegraphics[scale=0.75]{/Users/s285/vcs/github.com/subs-code/embedded-docs/compile/frequency/4-firmware-small.jpg}
 \end{center}
 
-Pushing this firmware and
+Flashing this firmware and
 observing the LED, it's clear that the order of magnitude is approximately correct, 
 yet $f'$ is ~4 times smaller than expected. Why is this true 
 if the application runs at 84MHz and each $for\ loop$ iteration executes only one $nop$ assembly instruction?\\[1 ex]
@@ -106,7 +110,8 @@ if the application runs at 84MHz and each $for\ loop$ iteration executes only on
 \setlength{\itemindent}{0.4in}
     \item The application runs at $N$ cycles per second, 
     but each iteration of the $for\ loop$ costs more than 1 CPU cycle. 
-    \item $N$ iterations of this $for\ loop$ ($N_{loops}$) costs $cN$ cycles ($c > 1$).
+    \item $N_d$ was over-estimated; the application is processing is slower than expected.
+    \item $N$ iterations of this $for\ loop$ ($N_{loop}$) costs $cN$ cycles ($c > 1$).
     \item $N_{loops} < N$ must be satisfied to achieve $f' \le 1.$
 \end{itemize}
 
@@ -151,22 +156,15 @@ $f'$ will approach 1 Hz.\\[2 ex]
     gpio_toggle(led_port,led_pin);
     \end{lstlisting}
 
-      %%%%%%%%% 4 SECOND FIRMWARE IMAGE %%%%%%%%%%%
+%%%%%%%%% 4 SECOND FIRMWARE IMAGE %%%%%%%%%%%
 \begin{center}
     \includegraphics[scale=0.75]{/Users/s285/vcs/github.com/subs-code/embedded-docs/compile/frequency/1-firmware-small.jpg}
 \end{center}
 
 Re-assuring -- a blink frequency of $f' = 0.934\ Hz \approxeq 1\ Hz$ (6.6 percent error). 
 
-%At 60fps, I measured $f' = 1.00 \frac{cycles}{second}$, suggesting our measurement of $c_i$ is highly accurate. 
-%This is probably not accurate down to the milisecond scale where error propogations are more significant.\\[2 ex]
-
 Although inefficient, we determined the time (or cycles) required 
 to execute simple machine instructions, without reading any corresponding assembly code.\\[0 ex]
-%%Reduce the implemented delay by a factor of $c_i$ and re-measure $f'$ to confirm that it approaches $1\ \frac{cycle}{second}$.\\[2 ex]
-
-%% INSERT 1 SECOND PHOTO %% 
-
 
 \end{flushleft}
 
